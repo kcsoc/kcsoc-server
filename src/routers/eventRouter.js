@@ -1,12 +1,13 @@
-const router = require("express").Router;
+const router = require("express").Router();
+const auth = require("../middleware/auth");
 
-// // Create chatroom
-// router.post("/create-event", async (req, res) => {
-// 	try {
-// 		const someAction = 1;
-// 	} catch (e) {
-// 		return res.status(500).send({ error: e.message });
-// 	}
-// });
+// Create event
+router.post("/create", auth, async (req, res) => {
+	try {
+		return res.status(201).send({ msg: "Event created" });
+	} catch (e) {
+		return res.status(500).send({ error: e.message });
+	}
+});
 
 module.exports = router;
