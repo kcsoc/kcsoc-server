@@ -12,17 +12,6 @@ async function connect() {
 	return await space.getEnvironment("master");
 }
 
-async function getData(env, id) {
-	let data = await env.getEntry(id);
-	// data.fields.speaker["en-US"] = "Devamrita Maharaj";
-	// await data.update();
-	// data = await env.getEntry(id);
-
-	// console.log(data);
-
-	// await data.publish();
-}
-
 async function createEvent(env, data, user) {
 	env.createEntry("event", {
 		fields: {
@@ -71,7 +60,6 @@ router.get("/getUserEvents", auth, async (req, res) => {
 });
 
 // Edit event
-
 router.post("/edit", auth, async (req, res) => {
 	try {
 		const env = await connect();
@@ -83,7 +71,6 @@ router.post("/edit", auth, async (req, res) => {
 					"Access Denied: Authenticated user has not created this event.",
 			});
 		}
-		console.log(fields);
 		const data = await env.getEntry(id);
 		data.fields = fields;
 		await data.update().then((entry) => {
@@ -92,6 +79,36 @@ router.post("/edit", auth, async (req, res) => {
 		});
 
 		return res.status(201).send({ msg: "Event edited" });
+	} catch (e) {
+		return res.status(500).send({ error: e.message });
+	}
+});
+
+// Edit event
+router.delete("/delete", auth, async (req, res) => {
+	try {
+		const env = await connect();
+		const user = await User.findById(req.user);
+		const { id } = req.body;
+		if (!user.eventsCreated.includes(id)) {
+			return res.status(401).send({
+				msg:
+					"Access Denied: Authenticated user has not created this event or event has already been deleted.",
+			});
+		}
+		env.getEntry(id)
+			.then((entry) => entry.unpublish())
+			.then((entry) => {
+				entry.delete();
+			})
+			.then(() => {
+				user.eventsCreated = user.eventsCreated.filter(
+					(el) => el !== id
+				);
+				user.save();
+			});
+
+		return res.status(201).send({ msg: "Event deleted" });
 	} catch (e) {
 		return res.status(500).send({ error: e.message });
 	}
