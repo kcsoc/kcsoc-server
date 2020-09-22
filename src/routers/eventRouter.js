@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const auth = require("../middleware/auth");
 const contentful = require("contentful-management");
+const auth = require("../middleware/auth");
+const User = require("../models/userModel");
 
 // Connect to Contentful
 async function connect() {
@@ -24,7 +25,7 @@ async function getData(env, id) {
 	// await data.publish();
 }
 
-async function createEvent(env, data, userId) {
+async function createEvent(env, data, user) {
 	env.createEntry("event", {
 		fields: {
 			name: { "en-US": data.name },
@@ -37,15 +38,17 @@ async function createEvent(env, data, userId) {
 	}).then((entry) => {
 		entry.publish();
 		const eventId = entry.sys.id;
-		console.log(eventId);
+		user.eventsCreated.push(eventId);
+		user.save();
 	});
 }
 
 // Create event
 router.post("/create", auth, async (req, res) => {
 	try {
-		let env = await connect();
-		const eventId = await createEvent(env, req.body, req.user);
+		const user = await User.findById(req.user);
+		const env = await connect();
+		await createEvent(env, req.body, user);
 		return res.status(201).send({ msg: "Event created" });
 	} catch (e) {
 		return res.status(500).send({ error: e.message });

@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
 			}
 		},
 	},
+	eventsCreated: [{ type: String, unique: true, required: true }],
 });
-
 
 userSchema.pre("save", async function (next) {
 	const user = this;
@@ -42,7 +42,6 @@ userSchema.pre("save", async function (next) {
 
 	next();
 });
-
 
 const User = mongoose.model("User", userSchema);
 
