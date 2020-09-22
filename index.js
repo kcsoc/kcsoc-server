@@ -15,8 +15,6 @@ app.use("/events", require("./src/routers/eventRouter"));
 app.use("/users", require("./src/routers/userRouter"));
 
 // Set up mongoose
-const connectionString =
-	"mongodb+srv://KCSOC:Krishna108@cluster0.u8tg0.mongodb.net/<dbname>?retryWrites=true&w=majority";
 mongoose.connect(
 	process.env.MONGODB_URI,
 	{
