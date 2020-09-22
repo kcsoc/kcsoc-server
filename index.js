@@ -15,22 +15,20 @@ app.use("/events", require("./src/routers/eventRouter"));
 app.use("/users", require("./src/routers/userRouter"));
 
 // Set up mongoose
-console.log(process.env.MONGODB_URI);
-// mongoose
-// 	.connect(
-// 		process.env.MONGODB_URI,
-// 		{
-// 			useNewUrlParser: true,
-// 			useUnifiedTopology: true,
-// 			useCreateIndex: true,
-// 		},
-// 		(err) => {
-// 			if (err) throw err;
-// 			console.log("MongoDB connection established");
-// 		}
-// 	)
-// 	.then(() => console.log("connected to MongoDB succeeded"))
-// 	.catch(() => console.log("connection to MongoDB failed!"));
+const connectionString =
+	"mongodb+srv://KCSOC:Krishna108@cluster0.u8tg0.mongodb.net/<dbname>?retryWrites=true&w=majority";
+mongoose.connect(
+	process.env.MONGODB_URI,
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useCreateIndex: true,
+	},
+	(err) => {
+		if (err) throw err;
+		console.log("MongoDB connection established");
+	}
+);
 
 // Start up the server
 const port = process.env.PORT || 5000;
