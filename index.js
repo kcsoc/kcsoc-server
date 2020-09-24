@@ -10,9 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Set up a basic homepage
+app.get("/", (req, res) => {
+	res.send("Welcome to the KCSOC Server API");
+});
+
 // Set up routers
 app.use("/events", require("./src/routers/eventRouter"));
 app.use("/users", require("./src/routers/userRouter"));
+app.use("/forms", require("./src/routers/formRouter"));
 
 // Set up mongoose
 mongoose.connect(
