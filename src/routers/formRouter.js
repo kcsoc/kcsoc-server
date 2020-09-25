@@ -6,7 +6,7 @@ require("dotenv").config();
 const client = new google.auth.JWT(
     process.env.GOOGLE_KEYS_CLIENT_EMAIL,
     null,
-    process.env.GOOGLE_KEYS_PRIVATE_KEY,
+    Buffer.from(process.env.GOOGLE_KEYS_PRIVATE_KEY, "base64").toString(),
     ["https://www.googleapis.com/auth/spreadsheets"]
 );
 
