@@ -1,11 +1,14 @@
 const router = require("express").Router();
 const moment = require("moment");
 const { google } = require("googleapis");
-const keys = require("../../keys.json");
+require("dotenv").config();
 
-const client = new google.auth.JWT(keys.client_email, null, keys.private_key, [
-	"https://www.googleapis.com/auth/spreadsheets",
-]);
+const client = new google.auth.JWT(
+	process.env.GOOGLE_KEYS_CLIENT_EMAIL,
+	null,
+	process.env.GOOGLE_KEYS_PRIVATE_KEY,
+	["https://www.googleapis.com/auth/spreadsheets"]
+);
 
 client.authorize(function (err) {
 	if (err) {
