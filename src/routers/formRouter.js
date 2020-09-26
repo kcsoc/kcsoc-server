@@ -127,7 +127,7 @@ router.post("/set-up-a-kcsoc", async (req, res) => {
             to: process.env.INFO_EMAIL,
             subject: "New kcsoc.com Form Entry: Set Up a KCSoc",
             text: `
-            You have got a new response on the kcsoc.com Get Involved Form!
+            You have got a new response on the kcsoc.com Set Up a KCSoc Form!
             Please find further details below.
             
                 Name: ${firstName} ${lastName}
