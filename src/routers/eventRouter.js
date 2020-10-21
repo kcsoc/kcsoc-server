@@ -9,11 +9,11 @@ const contentType = "image/jpeg";
 
 // Connect to Contentful
 async function connect() {
-	const client = await contentful.createClient({
-		accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
-	});
-	const space = await client.getSpace("46wxbd41m945");
-	return await space.getEnvironment("master");
+    const client = await contentful.createClient({
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+    });
+    const space = await client.getSpace("46wxbd41m945");
+    return await space.getEnvironment("master");
 }
 console.log(fs.readFileSync(filePath));
 
@@ -100,86 +100,84 @@ async function createEvent(env, data, user, asset) {
 
 // Create event
 router.post("/create", auth, async (req, res) => {
-	try {
-		const env = await connect();
-		const user = await User.findById(req.user);
-		await createEvent(env, req.body, user);
-		return res.status(201).send({ msg: "Event created" });
-	} catch (e) {
-		return res.status(500).send({ error: e.message });
-	}
+    try {
+        const env = await connect();
+        const user = await User.findById(req.user);
+        await createEvent(env, req.body, user);
+        return res.status(201).send({ msg: "Event created" });
+    } catch (e) {
+        return res.status(500).send({ error: e.message });
+    }
 });
 
 // Get all events created by user
 router.get("/getUserEvents", auth, async (req, res) => {
-	try {
-		const env = await connect();
-		const user = await User.findById(req.user);
-		const eventsData = await Promise.all(
-			user.eventsCreated.map(async (id) => {
-				const data = await env.getEntry(id);
-				return data;
-			})
-		);
-		return res.status(200).send(eventsData);
-	} catch (e) {
-		return res.status(500).send({ error: e.message });
-	}
+    try {
+        const env = await connect();
+        const user = await User.findById(req.user);
+        const eventsData = await Promise.all(
+            user.eventsCreated.map(async id => {
+                const data = await env.getEntry(id);
+                return data;
+            })
+        );
+        return res.status(200).send(eventsData);
+    } catch (e) {
+        return res.status(500).send({ error: e.message });
+    }
 });
 
 // Edit event
 router.post("/edit", auth, async (req, res) => {
-	try {
-		const env = await connect();
-		const user = await User.findById(req.user);
-		const { id, fields } = req.body;
-		if (!user.eventsCreated.includes(id)) {
-			return res.status(401).send({
-				msg:
-					"Access Denied: Authenticated user has not created this event.",
-			});
-		}
-		const data = await env.getEntry(id);
-		data.fields = fields;
-		await data.update().then((entry) => {
-			console.log(entry);
-			entry.publish();
-		});
+    try {
+        const env = await connect();
+        const user = await User.findById(req.user);
+        const { id, fields } = req.body;
+        if (!user.eventsCreated.includes(id)) {
+            return res.status(401).send({
+                msg:
+                    "Access Denied: Authenticated user has not created this event.",
+            });
+        }
+        const data = await env.getEntry(id);
+        data.fields = fields;
+        await data.update().then(entry => {
+            console.log(entry);
+            entry.publish();
+        });
 
-		return res.status(201).send({ msg: "Event edited" });
-	} catch (e) {
-		return res.status(500).send({ error: e.message });
-	}
+        return res.status(201).send({ msg: "Event edited" });
+    } catch (e) {
+        return res.status(500).send({ error: e.message });
+    }
 });
 
 // Delete event
 router.delete("/delete", auth, async (req, res) => {
-	try {
-		const env = await connect();
-		const user = await User.findById(req.user);
-		const { id } = req.body;
-		if (!user.eventsCreated.includes(id)) {
-			return res.status(401).send({
-				msg:
-					"Access Denied: Authenticated user has not created this event or event has already been deleted.",
-			});
-		}
-		env.getEntry(id)
-			.then((entry) => entry.unpublish())
-			.then((entry) => {
-				entry.delete();
-			})
-			.then(() => {
-				user.eventsCreated = user.eventsCreated.filter(
-					(el) => el !== id
-				);
-				user.save();
-			});
+    try {
+        const env = await connect();
+        const user = await User.findById(req.user);
+        const { id } = req.body;
+        if (!user.eventsCreated.includes(id)) {
+            return res.status(401).send({
+                msg:
+                    "Access Denied: Authenticated user has not created this event or event has already been deleted.",
+            });
+        }
+        env.getEntry(id)
+            .then(entry => entry.unpublish())
+            .then(entry => {
+                entry.delete();
+            })
+            .then(() => {
+                user.eventsCreated = user.eventsCreated.filter(el => el !== id);
+                user.save();
+            });
 
-		return res.status(201).send({ msg: "Event deleted" });
-	} catch (e) {
-		return res.status(500).send({ error: e.message });
-	}
+        return res.status(201).send({ msg: "Event deleted" });
+    } catch (e) {
+        return res.status(500).send({ error: e.message });
+    }
 });
 
 module.exports = router;
