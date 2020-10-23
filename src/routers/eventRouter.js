@@ -61,7 +61,7 @@ async function createEvent(env, data, file, user, res) {
                         name: { "en-US": data.name },
                         speaker: { "en-US": data.speaker },
                         location: { "en-US": data.location },
-                        university: { "en-US": data.university },
+                        university: { "en-US": user.university },
                         dateAndTime: { "en-US": data.dateAndTime },
                         type: { "en-US": "weekly" },
                         instagramUrl: { "en-US": data.instagramUrl },
@@ -81,9 +81,9 @@ async function createEvent(env, data, file, user, res) {
                     .then(entry => {
                         console.log("publishing event...");
                         entry.publish();
-                        const eventId = entry.sys.id;
-                        user.eventsCreated.push(eventId);
-                        user.save();
+                        // const eventId = entry.sys.id;
+                        // user.eventsCreated.push(eventId);
+                        // user.save();
                     })
                     .then(() => {
                         console.log("done!");

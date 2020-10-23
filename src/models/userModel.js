@@ -3,27 +3,32 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-	username: {
-		type: String,
-		unique: true,
-		required: true,
-		trim: true,
-		lowercase: true,
-	},
-	password: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: 7,
-		validate(value) {
-			if (value.toLowerCase().includes("password")) {
-				throw new Error(
-					'"password" cannot be included in the password'
-				);
-			}
-		},
-	},
-	eventsCreated: [{ type: String, unique: true, required: true }],
+    username: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true,
+        lowercase: true,
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 7,
+        validate(value) {
+            if (value.toLowerCase().includes("password")) {
+                throw new Error(
+                    '"password" cannot be included in the password'
+                );
+            }
+        },
+    },
+    university: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    eventsCreated: [{ type: String, unique: true, required: true }],
 });
 
 userSchema.pre("save", async function (next) {

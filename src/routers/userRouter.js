@@ -5,83 +5,84 @@ const jwt = require("jsonwebtoken");
 
 // Register user
 router.post("/register", async (req, res) => {
-	console.log(req.body);
-	try {
-		let { username, password, passwordCheck } = req.body;
+    console.log(req.body);
+    try {
+        let { username, university, password, passwordCheck } = req.body;
 
-		// validate
-		if (!username || !password || !passwordCheck) {
-			return res
-				.status(400)
-				.json({ msg: "Not all fields have been entered" });
-		}
-		if (password.length < 7) {
-			return res.status(400).json({
-				msg: "Password needs to be at least 7 characters long.",
-			});
-		}
-		if (password !== passwordCheck) {
-			return res.status(400).json({ msg: "Passwords do not match" });
-		}
+        // validate
+        if (!username || !password || !passwordCheck || !university) {
+            return res
+                .status(400)
+                .json({ msg: "Not all fields have been entered" });
+        }
+        if (password.length < 7) {
+            return res.status(400).json({
+                msg: "Password needs to be at least 7 characters long.",
+            });
+        }
+        if (password !== passwordCheck) {
+            return res.status(400).json({ msg: "Passwords do not match" });
+        }
 
-		const existingUser = await User.findOne({ username });
-		if (existingUser) {
-			return res
-				.status(400)
-				.json({ msg: "Account with this username already exists" });
-		}
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res
+                .status(400)
+                .json({ msg: "Account with this username already exists" });
+        }
 
-		const newUser = new User({
-			username,
-			password,
-		});
+        const newUser = new User({
+            username,
+            password,
+            university,
+        });
 
-		const savedUser = await newUser.save();
-		const userObject = savedUser.toObject();
-		delete userObject.password;
+        const savedUser = await newUser.save();
+        const userObject = savedUser.toObject();
+        delete userObject.password;
 
-		res.status(201).json(userObject);
-	} catch (e) {
-		res.status(400).json({ error: e.message });
-	}
+        res.status(201).json(userObject);
+    } catch (e) {
+        res.status(400).json({ error: e.message });
+    }
 });
 
 // Login user
 router.post("/login", async (req, res) => {
-	try {
-		const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
 
-		// validate
-		if (!username || !password) {
-			return res
-				.status(400)
-				.json({ msg: "Not all fields have been entered" });
-		}
+        // validate
+        if (!username || !password) {
+            return res
+                .status(400)
+                .json({ msg: "Not all fields have been entered" });
+        }
 
-		const user = await User.findOne({ username });
-		if (!user) {
-			return res.status(400).json({
-				msg: "Invalid credentials",
-			});
-		}
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(400).json({
+                msg: "Invalid credentials",
+            });
+        }
 
-		const isMatch = await bcrypt.compare(password, user.password);
-		if (!isMatch) {
-			return res.status(400).json({ msg: "Invalid credentials" });
-		}
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: "Invalid credentials" });
+        }
 
-		const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-		const userObject = user.toObject();
-		delete userObject.password;
+        const userObject = user.toObject();
+        delete userObject.password;
 
-		res.json({
-			token,
-			user: userObject,
-		});
-	} catch (e) {
-		res.status(500).json({ error: e.message });
-	}
+        res.json({
+            token,
+            user: userObject,
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // Verify Token
