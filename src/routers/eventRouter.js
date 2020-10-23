@@ -101,8 +101,9 @@ router.post("/create", auth, async (req, res) => {
         const imageFile = req.files.file;
         const data = JSON.parse(req.body.jsonData);
 
-        // return await createEvent(env, data, imageFile, user, res);
-        return res.status(401).send();
+        console.log(req.file);
+
+        return await createEvent(env, data, imageFile, user, res);
     } catch (e) {
         return res.status(500).send({ error: e.message });
     }
