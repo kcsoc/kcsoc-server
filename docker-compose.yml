@@ -1,8 +1,9 @@
 version: "3"
 services:
   server:
-    # build: .
-    image: kcsoc/server
+    build: .
+    # image: kcsoc/server
     ports:
       - "5000:5000"
     env_file: ".env"
+    restart: always
