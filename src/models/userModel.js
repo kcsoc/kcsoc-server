@@ -3,19 +3,12 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-    firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
-    email: {
+    username: {
         type: String,
         unique: true,
         required: true,
         trim: true,
         lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error("Email is invalid");
-            }
-        },
     },
     password: {
         type: String,
@@ -29,6 +22,11 @@ const userSchema = new mongoose.Schema({
                 );
             }
         },
+    },
+    university: {
+        type: String,
+        required: true,
+        trim: true,
     },
     eventsCreated: [{ type: String, unique: true, required: true }],
 });
