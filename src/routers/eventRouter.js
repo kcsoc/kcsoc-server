@@ -10,7 +10,7 @@ async function connect() {
     const client = await contentful.createClient({
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
     });
-    const space = await client.getSpace("46wxbd41m945");
+    const space = await client.getSpace(process.env.CONTENTFUL_SPACE_ID);
     return await space.getEnvironment("master");
 }
 

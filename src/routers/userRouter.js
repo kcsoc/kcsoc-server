@@ -38,6 +38,7 @@ router.post("/register", async (req, res) => {
         });
 
         const savedUser = await newUser.save();
+        console.log(savedUser);
         const userObject = savedUser.toObject();
         delete userObject.password;
 
