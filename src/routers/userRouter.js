@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
         if (password !== passwordCheck) {
             return res.status(400).json({ msg: "Passwords do not match" });
         }
-
+     
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             return res
