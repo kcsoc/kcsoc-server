@@ -76,30 +76,30 @@ router.post("/get-involved", async (req, res) => {
             },
         };
 
-        var mailOptions = {
-            from: process.env.SMTP_USER,
-            to: process.env.INFO_EMAIL,
-            subject: "New kcsoc.com Form Entry: Get Involved",
-            text: `
-            You have got a new response on the kcsoc.com Get Involved Form!
-            Please find further details below.
+        // var mailOptions = {
+        //     from: process.env.SMTP_USER,
+        //     to: process.env.INFO_EMAIL,
+        //     subject: "New kcsoc.com Form Entry: Get Involved",
+        //     text: `
+        //     You have got a new response on the kcsoc.com Get Involved Form!
+        //     Please find further details below.
 
-                Name: ${firstName} ${lastName}
-                University: ${university}
-                Course: ${course}
-                Email: ${email}
-                Phone Number: ${phoneNumber}
-                Student ID: ${studentID},
-                Something interesting: ${somethingInteresting}
-            `,
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log("Email sent: " + info.response);
-            }
-        });
+        //         Name: ${firstName} ${lastName}
+        //         University: ${university}
+        //         Course: ${course}
+        //         Email: ${email}
+        //         Phone Number: ${phoneNumber}
+        //         Student ID: ${studentID},
+        //         Something interesting: ${somethingInteresting}
+        //     `,
+        // };
+        // transporter.sendMail(mailOptions, function (error, info) {
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log("Email sent: " + info.response);
+        //     }
+        // });
 
         await gsapi.spreadsheets.values.append(updateOptions);
         return res.status(201).send({ msg: "Form submission accepted" });
