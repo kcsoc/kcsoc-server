@@ -48,7 +48,7 @@ router.post("/get-involved", async (req, res) => {
             university,
             email,
             phoneNumber,
-            studentId,
+            studentID,
             somethingInteresting,
             course,
         } = req.body;
@@ -60,7 +60,7 @@ router.post("/get-involved", async (req, res) => {
                 university,
                 email,
                 phoneNumber,
-                studentId,
+                studentID,
                 somethingInteresting,
                 course,
                 moment().format("DD/MM/YYYY"),
@@ -89,7 +89,7 @@ router.post("/get-involved", async (req, res) => {
                 Course: ${course}
                 Email: ${email}
                 Phone Number: ${phoneNumber}
-                Student ID: ${studentId},
+                Student ID: ${studentID},
                 Something interesting: ${somethingInteresting}
             `,
         };
