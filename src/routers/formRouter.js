@@ -48,7 +48,9 @@ router.post("/get-involved", async (req, res) => {
             university,
             email,
             phoneNumber,
-            studentID
+            studentID,
+            somethingInteresting,
+            course,
         } = req.body;
 
         const newRow = [
@@ -59,6 +61,8 @@ router.post("/get-involved", async (req, res) => {
                 email,
                 phoneNumber,
                 studentID,
+                somethingInteresting,
+                course,
                 moment().format("DD/MM/YYYY"),
             ],
         ];
@@ -82,9 +86,11 @@ router.post("/get-involved", async (req, res) => {
 
                 Name: ${firstName} ${lastName}
                 University: ${university}
+                Course: ${course}
                 Email: ${email}
                 Phone Number: ${phoneNumber}
-                Student ID: ${studentID}
+                Student ID: ${studentID},
+                Something interesting: ${somethingInteresting}
             `,
         };
         transporter.sendMail(mailOptions, function (error, info) {
